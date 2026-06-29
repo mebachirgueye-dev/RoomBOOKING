@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espaces & Réservations | RoomBook</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. RESET & VARIABLES --- */
+        :root {
+            --bg-dark: #020617;
+            --card-bg: #1e293b;
+            --primary: #38bdf8; /* Bleu clair */
+            --accent: #818cf8;  /* Violet */
+            --success: #34d399; /* Vert */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            outline: none !important;
+            margin: 0; padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(129, 140, 248, 0.08), transparent 25%);
+        }
+
+        /* --- 2. HEADER --- */
+        nav {
+            padding: 40px 6%;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-weight: 900; font-size: 1.8rem; letter-spacing: -1px; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .btn-back {
+            color: var(--text-main); text-decoration: none;
+            padding: 12px 25px; border-radius: 50px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            font-weight: 500; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .btn-back:hover { background: var(--text-main); color: var(--bg-dark); transform: translateX(-5px); }
+
+        .header-content { text-align: center; margin-bottom: 60px; }
+        .header-content h1 { font-size: 3.5rem; font-weight: 700; margin-bottom: 10px; letter-spacing: -1px; }
+        .header-content p { color: var(--text-muted); font-size: 1.2rem; }
+
+        /* --- 3. GRILLE DES CARTES --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 6% 100px 6%;
+        }
+
+        .room-card {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.4s ease;
+            position: relative;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .room-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(56, 189, 248, 0.3);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+        }
+
+        /* Image avec effet de zoom */
+        .card-img-wrapper {
+            height: 250px; overflow: hidden; position: relative;
+        }
+        .card-img-wrapper img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+        .room-card:hover .card-img-wrapper img { transform: scale(1.1); }
+        
+        /* Badge Capacité */
+        .capacity-badge {
+            position: absolute; top: 20px; right: 20px;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            padding: 8px 16px; border-radius: 30px;
+            font-size: 0.85rem; font-weight: 700;
+            display: flex; align-items: center; gap: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Contenu Carte */
+        .card-body { padding: 30px; }
+        .room-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; color: white; }
+        .room-specs-preview {
+            display: flex; gap: 15px; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px;
+        }
+        .room-specs-preview span { display: flex; align-items: center; gap: 6px; }
+
+        /* Bouton Action */
+        .action-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .status { color: var(--success); font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+        .btn-details {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white; border: none; padding: 12px 24px; border-radius: 12px;
+            font-weight: 700; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+        }
+        .btn-details:hover { filter: brightness(1.2); transform: scale(1.05); }
+
+        /* --- 4. MODAL (POPUP DÉTAILS) --- */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            opacity: 0; visibility: hidden;
+            transition: 0.4s;
+            display: flex; justify-content: center; align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+
+        .modal-content {
+            background: #0f172a;
+            width: 100%; max-width: 900px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            overflow: hidden;
+            transform: scale(0.9); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 50px 100px -20px rgba(0,0,0,0.8);
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+
+        .modal-image { flex: 1; min-height: 400px; position: relative; }
+        .modal-image img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .modal-details { flex: 1.2; padding: 50px; position: relative; }
+        .close-modal {
+            position: absolute; top: 20px; right: 20px;
+            background: rgba(255,255,255,0.1); border: none; color: white;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            transition: 0.3s;
+        }
+        .close-modal:hover { background: rgba(255,255,255,0.2); transform: rotate(90deg); }
+
+        /* Grille d'infos dans le modal */
+        .info-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px;
+        }
+        .info-item h4 { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .info-item p { color: white; font-size: 1.1rem; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+        .info-item i { color: var(--primary); }
+
+        .equipment-list { margin-top: 30px; }
+        .equipment-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .tag {
+            background: rgba(56, 189, 248, 0.1); color: var(--primary);
+            padding: 8px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 500;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        /* Responsive Modal */
+        @media (max-width: 900px) {
+            .modal-content { flex-direction: column; max-height: 90vh; overflow-y: auto; }
+            .modal-image { height: 250px; flex: none; }
+            .modal-details { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">ROOMBOOK.</div>
+        <a href="../index.html" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </nav>
+
+    <div class="header-content">
+        <h1>Nos Espaces</h1>
+        <p>Environnements optimisés pour la productivité</p>
+    </div>
+
+    <div class="grid-container">
+
+        <article class="room-card" onclick="openModal('cheick')">
+            <div class="card-img-wrapper">
+                <img src="/img/image_conference.png" alt="Salle Conférence">
+                <div class="capacity-badge"><i class="fas fa-users"></i> 120</div>
+            </div>
+            <div class="card-body">
+                <h2 class="room-title">Salle Cheick Sall</h2>
+                <div class="room-specs-preview">
+                    <span><i class="fas fa-ruler-combined"></i> 150 m²</span>
+                    <span><i class="fas fa-layer-group"></i> RDC</span>
+                </div>
+                <div class="action-row">
+                    <div class="status"><i class="fas fa-circle" style="font-size: 8px;"></i> Disponible</div>
+                    <button class="btn-details">Voir les détails</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="room-card" onclick="openModal('alassane')">
+            <div class="card-img-wrapper">
+                <img src="/img/image_openspace.png" alt="Espace Créatif">
+                <div class="capacity-badge"><i class="fas fa-users"></i> 20</div>
+            </div>
+            <div class="card-body">
+                <h2 class="room-title">Salle Alassane II</h2>
+                <div class="room-specs-preview">
+                    <span><i class="fas fa-ruler-combined"></i> 45 m²</span>
+                    <span><i class="fas fa-layer-group"></i> 1er Étage</span>
+                </div>
+                <div class="action-row">
+                    <div class="status"><i class="fas fa-circle" style="font-size: 8px;"></i> Disponible</div>
+                    <button class="btn-details">Voir les détails</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="room-card" onclick="openModal('ovale')">
+            <div class="card-img-wrapper">
+                <img src="/img/image_meeting.png" alt="Bureau VIP">
+                <div class="capacity-badge"><i class="fas fa-users"></i> 12</div>
+            </div>
+            <div class="card-body">
+                <h2 class="room-title">Bureau Ovale</h2>
+                <div class="room-specs-preview">
+                    <span><i class="fas fa-ruler-combined"></i> 30 m²</span>
+                    <span><i class="fas fa-layer-group"></i> 2ème Étage</span>
+                </div>
+                <div class="action-row">
+                    <div class="status"><i class="fas fa-circle" style="font-size: 8px;"></i> Disponible</div>
+                    <button class="btn-details">Voir les détails</button>
+                </div>
+            </div>
+        </article>
+
+    </div>
+
+    <div class="modal-overlay" id="roomModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            <div class="modal-image">
+                <img src="" id="modalImg" alt="Room Detail">
+            </div>
+            <div class="modal-details">
+                <h2 id="modalTitle" style="font-size: 2.5rem; margin-bottom: 10px;">Titre Salle</h2>
+                <p id="modalDesc" style="color: #94a3b8; line-height: 1.6;">Description...</p>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <h4>Superficie</h4>
+                        <p><i class="fas fa-ruler-combined"></i> <span id="modalArea">0 m²</span></p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Capacité</h4>
+                        <p><i class="fas fa-users"></i> <span id="modalCap">0 Pers.</span></p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Localisation</h4>
+                        <p><i class="fas fa-map-marker-alt"></i> <span id="modalLoc">Etage</span></p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Luminosité</h4>
+                        <p><i class="fas fa-sun"></i> Naturelle + LED</p>
+                    </div>
+                </div>
+
+                <div class="equipment-list">
+                    <h4>Équipements inclus</h4>
+                    <div class="equipment-tags" id="modalEquip">
+                        </div>
+                </div>
+                
+                <button style="width: 100%; margin-top: 40px; padding: 15px; background: white; color: black; border: none; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer;">Réserver cet espace maintenant</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DONNÉES DES SALLES ---
+        const roomsData = {
+            'cheick': {
+                title: "Salle Cheick Sall",
+                desc: "Notre auditorium principal conçu pour les grandes conférences et les séminaires d'entreprise. Acoustique traitée et scène modulable.",
+                img: "image_conference.jpg",
+                area: "150 m²",
+                capacity: "120 Personnes",
+                location: "Rez-de-chaussée, Aile Nord",
+                equipment: ["Projecteur 4K", "Sonorisation Dolby", "Pupitre Connecté", "Microphones HF", "Climatisation Indépendante"]
+            },
+            'alassane': {
+                title: "Salle Alassane II",
+                desc: "Un espace ouvert et flexible, idéal pour les ateliers, le brainstorming et les méthodologies Agile. Mobilier entièrement modulable.",
+                img: "image_openspace.jpg",
+                area: "45 m²",
+                capacity: "20 Personnes",
+                location: "1er Étage, Vue Jardin",
+                equipment: ["Écran Tactile Géant", "Paperboards", "Whiteboards Magnétiques", "Système Visio", "Apple TV"]
+            },
+            'ovale': {
+                title: "Bureau Ovale",
+                desc: "La suite exécutive pour les décisions stratégiques. Confidentialité totale, confort haut de gamme et services exclusifs.",
+                img: "image_meeting.jpg",
+                area: "30 m²",
+                capacity: "12 Personnes",
+                location: "2ème Étage, Zone VIP",
+                equipment: ["Table Marbre Connectée", "Sièges Ergonomiques", "Confidentialité Phonique", "Minibar", "Écran 85 pouces"]
+            }
+        };
+
+        const modal = document.getElementById('roomModal');
+
+        // OUVRIR LE MODAL AVEC LES BONNES INFOS
+        function openModal(roomId) {
+            const data = roomsData[roomId];
+            
+            // Remplissage des textes
+            document.getElementById('modalTitle').textContent = data.title;
+            document.getElementById('modalDesc').textContent = data.desc;
+            document.getElementById('modalImg').src = data.img;
+            document.getElementById('modalArea').textContent = data.area;
+            document.getElementById('modalCap').textContent = data.capacity;
+            document.getElementById('modalLoc').textContent = data.location;
+
+            // Remplissage des équipements (Tags)
+            const equipContainer = document.getElementById('modalEquip');
+            equipContainer.innerHTML = ''; // Reset
+            data.equipment.forEach(item => {
+                const tag = document.createElement('span');
+                tag.className = 'tag';
+                tag.textContent = item;
+                equipContainer.appendChild(tag);
+            });
+
+            // Animation d'entrée
+            modal.classList.add('active');
+        }
+
+        // FERMER LE MODAL
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // Fermer si on clique en dehors du contenu
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+    </script>
+</body>
+</html>

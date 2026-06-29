@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoomBook - Gestion de Réservation</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1><i class="fa-solid fa-house"></i> RoomBook</h1>
+            <nav>
+                <ul>
+                    <li><a href="#accueil">Accueil</a></li>
+                    <li><a href="#decouverte-salles">Découverte des salles</a></li>
+                    <li><a href="#reservation">Réserver</a></li>
+                    <li><a href="#login-section">Admin</a></li>
+                    <li><a href="#contact">Contact</a></li>
+
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <section id="accueil" style="padding: 150px 0  100px;">
+            <div class="section-accueil">
+                <h2>Bienvenue sur RoomBook</h2>
+                <p>L'application simple pour gérer vos réservations de salles de réunion, de salles de cours ou d'open space.</p>
+                <div class="actions">
+                    <a href="#reservation" class="btn">Faire une réservation</a>
+                    <a href="#decouverte-salles" class="btn btn-secondary">Voir les salles</a>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="decouverte-salles">
+            <div class="container">
+                <h2>Trouvez l'espace parfait</h2>
+                <p class="section-subtitle">Nous avons l'environnement qu'il vous faut pour exceller.</p>
+                
+                <div class="preview-grid">
+                    <div class="preview-card">
+                        <div class="image-container">
+                            <img src="/img/image_meeting.png" alt="Salle de réunion moderne">
+                        </div>
+                        <h3>Réunion</h3>
+                        <p>Pour vos points d'équipe et présentations.</p>
+                        <a href="#reservation">Réserver →</a>
+                    </div>
+                    
+                    <div class="preview-card">
+                        <div class="image-container">
+                            <img src="/img/image_conference.png" alt="Amphithéâtre et conférence">
+                        </div>
+                        <h3>Conférence</h3>
+                        <p>Pour vos grands événements et séminaires.</p>
+                        <a href="#reservation">Réserver →</a>
+                    </div>
+
+                    <div class="preview-card">
+                        <div class="image-container">
+                            <img src="/img/image_openspace.png" alt="Espace de travail partagé">
+                        </div>
+                        <h3>Open Space</h3>
+                        <p>Pour la créativité partagée et le co-working.</p>
+                        <a href="#reservation">Réserver →</a>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <a href="/html/salle.html" class="btn btn-primary" style="color: white;">Voir toutes les salles</a>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="disponibilite" class="container" style="margin-top: 80px; margin-bottom: 80px;">
+            <div class="section-header" style="text-align: center; margin-bottom: 40px;">
+                <h2 style="font-family: 'Poppins', sans-serif; font-size: 2rem; color: var(--text-dark);">
+                    Disponibilité des Salles
+                </h2>
+                <p style="color: var(--text-light);">Vérifiez le statut de nos salles en temps réel.</p>
+                
+                <div class="date-filter" style="margin-top: 20px;">
+                    <label for="check-date" style="margin-right: 10px;">Date :</label>
+                    <input type="date" id="check-date" class="date-input">
+                </div>
+            </div>
+
+            <div id="availability-grid" class="preview-grid">
+                </div>
+        </section>
+
+        <hr>
+
+        <section id="reservation">
+            <h2>Réserver une salle <i class="fa-solid fa-calendar-days"></i></h2>
+            
+            <div class="card">
+                <div id="message-feedback" class="message hidden"></div>
+
+                <form id="form-reservation">
+                    <div class="form-group">
+                        <label for="nom-user">Votre Nom / Identifiant :</label>
+                        <input type="text" id="nom-user" placeholder="Ex: Bachir Gueye" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="select-salle">Choisir une salle :</label>
+                        <select id="select-salle" required>
+                            <option value="">-- Sélectionnez une salle --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date-reservation">Date de réservation :</label>
+                        <input type="date" id="date-reservation" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Confirmer la réservation</button>
+                </form>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="login-section">
+            <h2>Espace Gérant <i class="fa-solid fa-circle-user"></i></h2>
+
+            <div class="card" id="card-login">
+                <p>Veuillez vous identifier pour accéder à la gestion des salles.</p>
+
+                <form id="form-login">
+                    <div class="form-group">
+                        <label for="login-user">Identifiant :</label>
+                        <input type="text" id="login-user" placeholder="admin" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-pass">Mot de passe :</label>
+                        <input type="password" id="login-pass" placeholder="••••" required>
+                    </div>
+
+                    <p id="msg-erreur-login" style="color: red; display: none;">Identifiants incorrects !</p>
+
+                    <button type="submit">Se connecter</button>
+                </form>
+            </div>
+
+            <div id="admin-panel" style="display: none;">
+                <div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <span>Mode administrateur activé. Vous pouvez ajouter ou supprimer des salles.</span>
+                    <button id="btn-logout" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;">Déconnexion</button>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="contact">
+            <h2>Contactez-nous <i class="fa-solid fa-address-book"></i></h2>
+            
+            <div class="card">
+                <p>Vous rencontrez un problème technique ou vous avez une question sur une salle ? Envoyez-nous un message.</p>
+                
+                <form id="form-contact">
+                    <div class="form-group">
+                        <label for="contact-nom">Votre nom :</label>
+                        <input type="text" id="contact-nom" placeholder="Votre nom complet" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contact-email">Votre email :</label>
+                        <input type="email" id="contact-email" placeholder="exemple@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contact-message">Message :</label>
+                        <textarea id="contact-message" rows="3" placeholder="Décrivez votre demande..." required></textarea>
+                    </div>
+
+                    <button type="submit">Envoyer le message</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                
+                <div class="footer-col brand-col">
+                    <h3><i class="fa-solid fa-house"></i> RoomBook</h3>
+                    <p>La solution élégante pour simplifier la gestion de vos espaces de travail. Réservez, planifiez, réussissez.</p>
+                </div>
+
+                <div class="footer-col links-col">
+                    <h4>Navigation</h4>
+                    <ul>
+                        <li><a href="#accueil">Accueil</a></li>
+                        <li><a href="#reservation">Réserver une salle</a></li>
+                        <li><a href="#liste-reservations">Planning</a></li>
+                        <li><a href="#contact">Support</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col contact-col">
+                    <h4>Nous contacter</h4>
+                    <ul>
+                        <li>bachirgueye970@gmail.com</li>
+                        <li>+221 78 403 14 34</li>
+                        <li>Dakar, Sénégal</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 RoomBook - Développé avec passion par <span class="author">BGcode</span></p>
+                <div class="legal-links">
+                    <a href="#">Mentions Légales</a>
+                    <a href="#">Confidentialité</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

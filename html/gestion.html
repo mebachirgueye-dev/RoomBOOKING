@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - RoomBook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <div class="admin-wrapper">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>RoomBook <span>Admin</span></h2>
+            </div>
+
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <img src="/img/profile foto.jpeg" alt="Admin">
+                </div>
+                <div class="user-info">
+                    <p class="name">Mohamed Gueye</p>
+                    <p class="role">Super Admin</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#tableaudebord"><i class="fas fa-th-large"></i> Tableau de bord</a></li>
+                    <li><a href="#reservation"><i class="fas fa-calendar-check"></i> Réservations</a></li>
+                    <li><a href="#salles"><i class="fas fa-door-open"></i> Salles</a></li>
+                    <li><a href="#historique"><i class="fas fa-history"></i> Historique</a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="/index.html" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <div id="tableaudebord" class="page-header">
+                <h2 class="page-title">Tableau de bord</h2>
+                <p>Aperçu général de l'activité.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card blue">
+                    <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <div class="stat-info">
+                        <h3>Réservations Totales</h3>
+                        <p id="stat-total-res">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card purple">
+                    <div class="stat-icon"><i class="fas fa-door-open"></i></div>
+                    <div class="stat-info">
+                        <h3>Salles Actives</h3>
+                        <p id="stat-total-rooms">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card green">
+                    <div class="stat-icon"><i class="fas fa-check-double"></i></div>
+                    <div class="stat-info">
+                        <h3>Confirmées / Terminées</h3>
+                        <p id="stat-confirmed-res">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+
+            <div id="reservation" class="page-header">
+                <h2 class="page-title">Gestion des Réservations</h2>
+                <p>Demandes en attente de validation.</p>
+            </div>
+
+            <div class="card-list" style="margin-bottom: 40px;">
+                <div class="card-header">
+                    <h3><i class="fas fa-clock"></i> En attente</h3>
+                    <span class="badge-count" id="res-count-badge">0</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="rooms-table">
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Salle</th>
+                                <th>Date</th>
+                                <th>Statut</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservations-table-body">
+                            </tbody>
+                    </table>
+                    <div id="no-res-message" style="display:none; padding:30px; text-align:center; color:#9ca3af;">
+                        Aucune réservation en attente.
+                    </div>
+                </div>
+            </div>
+
+            <div id="salles" class="page-header">
+                <h2 class="page-title">Gestion des Salles</h2>
+                <p>Ajouter ou supprimer des espaces.</p>
+            </div>
+
+            <div class="rooms-grid-layout">
+                <div class="card-form">
+                    <div class="card-header">
+                        <h3><i class="fas fa-plus-circle"></i> Nouvelle Salle</h3>
+                    </div>
+                    <form id="add-room-form" class="admin-form">
+                        <div class="form-group">
+                            <label>Nom de la salle</label>
+                            <input type="text" id="room-name-input" placeholder="Ex: Salle Elon Musk" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Capacité</label>
+                                <input type="number" id="room-capacity-input" placeholder="0" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Type</label>
+                                <select id="room-type-input" required>
+                                    <option value="reunion">Réunion</option>
+                                    <option value="cours">Salle de Cours</option>
+                                    <option value="info">Informatique</option>
+                                    <option value="open">Open Space</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Ajouter</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-list">
+                    <div class="card-header">
+                        <h3><i class="fas fa-list"></i> Salles enregistrées</h3>
+                        <span class="badge-count" id="total-rooms-count">0</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="rooms-table">
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Type</th>
+                                    <th>Capacité</th>
+                                    <th class="text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rooms-table-body">
+                                </tbody>
+                        </table>
+                        <div id="no-rooms-message" style="display:none; padding:20px; text-align:center; color:#9ca3af;">
+                            Aucune salle.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+
+            <div id="historique" class="page-header">
+                <h2 class="page-title">Historique Global</h2>
+                <p>Journal complet de toutes les réservations (passées et futures).</p>
+            </div>
+
+            <div class="card-list">
+                <div class="table-responsive">
+                    <table class="rooms-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Client</th>
+                                <th>Salle</th>
+                                <th>Statut Final</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html>
